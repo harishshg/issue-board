@@ -88,12 +88,26 @@
   const fullTime = (iso) => new Date(iso).toLocaleString();
   const timeTag = (iso) => `<time datetime="${esc(iso)}" title="${esc(fullTime(iso))}">${esc(relTime(iso))}</time>`;
 
+  // Branch convention (order-service CONTRIBUTING.md §2 and the CI check):
+  //   bugfix/OMS-123-short-description  (Bug)      feature/OMS-123-short-description  (Story, Task)
+  // Ticket key as in Jira; description lower-case kebab-case, a few words long.
+  const BRANCH_RE = /^(feature|bugfix|hotfix)\/[A-Z]+-[0-9]+-[a-z0-9]+(-[a-z0-9]+)*$/;
+  const FILLER = new Set(['a', 'an', 'the', 'of', 'to', 'in', 'on', 'for', 'with', 'and', 'or', 'is', 'are',
+    'be', 'by', 'at', 'as', 'it', 'its', 'when', 'that', 'this', 'from', 'can', 'always', 'same', 'every',
+    'any', 'all']);  // negations (not, cant, dont...) are kept: dropping them flips the meaning
   function slugBranch(issue) {
     const prefix = issue.type === 'Bug' ? 'bugfix' : 'feature';
-    let slug = issue.summary.toLowerCase().replace(/\[[^\]]*\]/g, ' ').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-    if (slug.length > 45) slug = slug.slice(0, 45).replace(/-[^-]*$/, '');
-    while (/-(a|an|the|of|to|in|on|for|with|and|or|is|are|be)$/.test(slug)) slug = slug.replace(/-[^-]*$/, '');
-    return `${prefix}/${issue.key}-${slug}`;
+    const words = issue.summary.toLowerCase()
+      .replace(/\[[^\]]*\]/g, ' ')          // drop tags like [SECURITY]
+      .replace(/['’]/g, '')                 // can't -> cant
+      .split(/[^a-z0-9]+/)
+      .filter((w) => w && !FILLER.has(w));
+    const picked = [];
+    for (const w of words) {
+      if (picked.length === 5 || [...picked, w].join('-').length > 40) break;
+      picked.push(w);
+    }
+    return `${prefix}/${issue.key}-${picked.join('-') || 'change'}`;
   }
 
   let toastTimer;
@@ -807,8 +821,16 @@
       display: (i) => `<a href="${esc(i.pullRequest)}" target="_blank" rel="noopener noreferrer">${esc(i.pullRequest.replace(/^https?:\/\/(www\.)?/, ''))}</a>`,
     });
     const suggestion = slugBranch(issue);
+    let branchNote = '';
+    if (!issue.branch) {
+      branchNote = `<div class="suggest">Suggested: <span class="branch">${esc(suggestion)}</span> <button type="button" class="link-btn" id="useBranch">Use</button></div>`;
+    } else if (!BRANCH_RE.test(issue.branch)) {
+      branchNote = `<div class="suggest warn">⚠ Doesn't follow the naming convention <code>type/${esc(issue.key)}-short-description</code>. For example: <span class="branch">${esc(suggestion)}</span></div>`;
+    } else if (!issue.branch.includes(`/${issue.key}-`)) {
+      branchNote = `<div class="suggest warn">⚠ This branch names a different ticket than ${esc(issue.key)}.</div>`;
+    }
     $('#devBox').innerHTML = [
-      row('Branch', `${branch.html}${issue.branch ? '' : `<div class="suggest">Suggested: <span class="branch">${esc(suggestion)}</span> <button type="button" class="link-btn" id="useBranch">Use</button></div>`}`),
+      row('Branch', `${branch.html}${branchNote}`),
       row('Pull request', pr.html),
     ].join('');
     branch.wire();

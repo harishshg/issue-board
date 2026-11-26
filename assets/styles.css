@@ -259,6 +259,9 @@ textarea { width: 100%; resize: vertical; line-height: 1.5; }
 .dates { font-size: 12px; color: var(--text-muted); line-height: 1.8; }
 .branch { font-family: var(--mono); font-size: 12px; background: var(--code-bg); padding: 2px 6px; border-radius: 3px; word-break: break-all; }
 .suggest { font-size: 12px; margin-top: 4px; color: var(--text-muted); }
+.suggest.warn { color: #a54800; }
+.suggest code { font-family: var(--mono); background: var(--code-bg); padding: 0 3px; border-radius: 3px; }
+@media (prefers-color-scheme: dark) { .suggest.warn { color: #fea362; } }
 
 /* ---------- markdown ---------- */
 .md { overflow-wrap: anywhere; }

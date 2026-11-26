@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>IssueBoard</title>
+  <meta name="description" content="Lightweight issue tracker board for the OMS mentoring programme">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230c66e4'/%3E%3Crect x='7' y='8' width='5' height='16' rx='1.5' fill='white'/%3E%3Crect x='14' y='8' width='5' height='10' rx='1.5' fill='white'/%3E%3Crect x='21' y='8' width='5' height='13' rx='1.5' fill='white'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#/board" aria-label="IssueBoard home">
+      <svg viewBox="0 0 32 32" width="24" height="24" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#0c66e4"/><rect x="7" y="8" width="5" height="16" rx="1.5" fill="#fff"/><rect x="14" y="8" width="5" height="10" rx="1.5" fill="#fff"/><rect x="21" y="8" width="5" height="13" rx="1.5" fill="#fff"/></svg>
+      <span>IssueBoard</span>
+    </a>
+    <nav class="topnav" aria-label="Main">
+      <a href="#/board" data-nav="board">Board</a>
+      <a href="#/list" data-nav="list">List</a>
+    </nav>
+    <button class="btn primary" id="createBtn" type="button" title="Create issue (c)">+ Create</button>
+    <div class="spacer"></div>
+    <label class="actor">
+      <span class="muted">Acting as</span>
+      <select id="actorSelect" aria-label="Acting as"></select>
+    </label>
+    <div class="menu-wrap">
+      <button class="btn subtle" id="menuBtn" type="button" aria-haspopup="true" aria-expanded="false" title="More">•••</button>
+      <div class="menu" id="menu" role="menu" hidden>
+        <button type="button" role="menuitem" data-action="people">Manage people</button>
+        <button type="button" role="menuitem" data-action="export">Export board (JSON)</button>
+        <button type="button" role="menuitem" data-action="import">Import board (JSON)…</button>
+        <hr>
+        <button type="button" role="menuitem" data-action="reset" class="danger">Reset board to original tickets</button>
+      </div>
+      <input type="file" id="importFile" accept="application/json,.json" hidden>
+    </div>
+  </header>
+
+  <div id="banner" class="banner" hidden></div>
+
+  <div class="layout">
+    <aside class="sidebar" aria-label="Project">
+      <div class="project">
+        <div class="project-icon" id="projectIcon">OMS</div>
+        <div>
+          <div class="project-name" id="projectName">Order Management Service</div>
+          <div class="muted small">Software project</div>
+        </div>
+      </div>
+      <div class="side-heading">Planning</div>
+      <a class="side-link" href="#/board" data-nav="board">
+        <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M2 2h3v12H2zM6.5 2h3v8h-3zM11 2h3v10h-3z"/></svg>
+        Board
+      </a>
+      <a class="side-link" href="#/list" data-nav="list">
+        <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M2 3h12v2H2zM2 7h12v2H2zM2 11h12v2H2z"/></svg>
+        List
+      </a>
+      <div class="side-foot muted small">
+        Changes are saved in this browser. Use <em>Export</em> to share them.
+      </div>
+    </aside>
+    <main id="app" class="main" tabindex="-1"></main>
+  </div>
+
+  <div id="modalRoot"></div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="data/seed.js"></script>
+  <script src="assets/markdown.js"></script>
+  <script src="assets/store.js"></script>
+  <script src="assets/app.js"></script>
+</body>
+</html>

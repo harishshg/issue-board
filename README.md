@@ -89,7 +89,12 @@ python3 tools/build_seed.py
 ```
 
 Browsers that have already opened the board keep their saved copy. Use **Reset board** to load
-the new seed.
+the new seed. (New people in the seed are added to saved boards automatically.)
+
+**Run this script before every commit**, even if you only changed `assets/`. It also stamps a
+version onto each file link in `index.html` (`app.js?v=…`). GitHub Pages lets browsers cache
+files for 10 minutes, and the version stamp makes sure a refresh never mixes old and new files.
+Right after a deploy, a hard refresh (Cmd/Ctrl + Shift + R) shows the change immediately.
 
 ## Project layout
 

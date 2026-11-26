@@ -89,14 +89,15 @@
   const timeTag = (iso) => `<time datetime="${esc(iso)}" title="${esc(fullTime(iso))}">${esc(relTime(iso))}</time>`;
 
   // Branch convention (order-service CONTRIBUTING.md §2 and the CI check):
-  //   bugfix/OMS-123-short-description  (Bug)      feature/OMS-123-short-description  (Story, Task)
+  //   bugfix/OMS-123-short-description  (Bug)      feature/OMS-123-short-description  (Story)
+  //   chore/OMS-123-short-description   (Task: docs, CI, build, dependencies; use feature/ if it changes behaviour)
   // Ticket key as in Jira; description lower-case kebab-case, a few words long.
-  const BRANCH_RE = /^(feature|bugfix|hotfix)\/[A-Z]+-[0-9]+-[a-z0-9]+(-[a-z0-9]+)*$/;
+  const BRANCH_RE = /^(feature|bugfix|chore|hotfix)\/[A-Z]+-[0-9]+-[a-z0-9]+(-[a-z0-9]+)*$/;
   const FILLER = new Set(['a', 'an', 'the', 'of', 'to', 'in', 'on', 'for', 'with', 'and', 'or', 'is', 'are',
     'be', 'by', 'at', 'as', 'it', 'its', 'when', 'that', 'this', 'from', 'can', 'always', 'same', 'every',
     'any', 'all']);  // negations (not, cant, dont...) are kept: dropping them flips the meaning
   function slugBranch(issue) {
-    const prefix = issue.type === 'Bug' ? 'bugfix' : 'feature';
+    const prefix = { Bug: 'bugfix', Task: 'chore' }[issue.type] || 'feature';
     const words = issue.summary.toLowerCase()
       .replace(/\[[^\]]*\]/g, ' ')          // drop tags like [SECURITY]
       .replace(/['’]/g, '')                 // can't -> cant

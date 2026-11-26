@@ -87,6 +87,14 @@ window.Store = (() => {
     if (raw) {
       try {
         db = validateDb(JSON.parse(raw));
+        // People added to the seed later (e.g. a new team member) also appear on boards saved before.
+        const seedUsers = (window.ISSUEBOARD_SEED && window.ISSUEBOARD_SEED.users) || [];
+        const known = new Set(db.users.map((u) => u.name.toLowerCase()));
+        const missing = seedUsers.filter((u) => u && u.name && !known.has(String(u.name).toLowerCase()));
+        if (missing.length) {
+          db.users.push(...missing.map((u) => ({ name: String(u.name) })));
+          save();
+        }
         return;
       } catch (e) {
         console.warn('Stored board was unreadable; starting from the original tickets.', e);

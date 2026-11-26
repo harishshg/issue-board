@@ -73,7 +73,7 @@ def main() -> None:
     seed = {
         "version": 1,
         "project": {"key": "OMS", "name": "Order Management Service"},
-        "users": [{"name": "Mentor"}, {"name": "Student"}],
+        "users": [{"name": "Mentor"}, {"name": "Revanth"}],
         "issues": issues,
     }
     OUT.parent.mkdir(parents=True, exist_ok=True)

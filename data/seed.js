@@ -10,7 +10,7 @@ window.ISSUEBOARD_SEED = {
    "name": "Mentor"
   },
   {
-   "name": "Student"
+   "name": "Revanth"
   }
  ],
  "issues": [
